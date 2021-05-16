@@ -29,6 +29,6 @@ jobs:
 
             The format `<type>(<scope>): <subject>` (`^\w+\(.+\): .+`) is acceptable. e.g., `feat(api): Add /users/get`
 
-      - name: Fail when commits don't pass lint
+      - name: Soft exit (Fail) when commits don't pass lint
         if: ${{ steps.lint-commits.outputs.unmatched_commits != '' }}
-        run: exit 1
+        run: exit 0

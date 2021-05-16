@@ -9,7 +9,7 @@ import time
 
 from pyspark.sql import DataFrame, SparkSession
 
-from pydeequ.scala_utils import to_scala_map, to_scala_seq
+from pydeequ3.scala_utils import to_scala_map, to_scala_seq
 
 
 class MetricsRepository:
@@ -24,8 +24,7 @@ class MetricsRepository:
         """
         tempDir = spark_session._jvm.com.google.common.io.Files.createTempDir()
         f = spark_session._jvm.java.io.File(tempDir, filename)
-        f_path = f.getAbsolutePath()
-        return f_path
+        return f.getAbsolutePath()
 
     def _check_RepositoryLoader(self):
         """

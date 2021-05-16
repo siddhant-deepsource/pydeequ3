@@ -16,22 +16,27 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
+        hadoop: [3.2]
+        java: [11]
+        spark-version: [3.0.2]
+        python-version: [3.7, 3.8]
+        scala-version: [2.12]
+        # include:
           # - java: 8
           #   hadoop: 2.7
           #   spark-version: 2.4.7
           #   python-version: 3.7.7
           #   scala: 2.11
-          - java: 11
-            hadoop: 3.2
-            spark-version: 3.0.2
-            python-version: 3.7
-            scala: 2.12
-          - java: 8
-            hadoop: 3.2
-            spark-version: 3.0.2
-            python-version: 3.7
-            scala: 2.12
+          # - java: 11
+          #   hadoop: 3.2
+          #   spark-version: 3.0.2
+          #   python-version: 3.7
+          #   scala: 2.12
+          # - java: 8
+          #   hadoop: 3.2
+          #   spark-version: 3.0.2
+          #   python-version: 3.7
+          #   scala: 2.12
           # ToDO: Check deequ with 3.1.1
           # - java: 11
           #   hadoop: 3.2
@@ -146,7 +151,23 @@ jobs:
         run: |
           # source .venv/bin/activate
           # python -m pytest
-          poetry run pytest
+
+          poetry run coverage run -m pytest --reruns 5 --reruns-delay 30
+          poetry run coverage report
+          poetry run coverage xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          # files: ./coverage*.xml
+          # directory: ./
+          flags: unittests
+          env_vars: OS,PYTHON
+          name: codecov-${{ matrix.os}}-python${{ matrix.python-version }}
+          fail_ci_if_error: true
+          # path_to_write_report: ./codecov_report.xml
+          verbose: true
 
       - name: Check Disk Size after Build
         run: |

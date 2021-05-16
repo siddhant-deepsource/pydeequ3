@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from pydeequ import __version__
+from pydeequ3 import __version__
 
 
 def test_version():
-    assert __version__ == "0.1.5"
+    if __version__ != "0.1.5":
+        raise AssertionError

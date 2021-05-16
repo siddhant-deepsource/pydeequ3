@@ -8,7 +8,7 @@ import json
 
 from pyspark.sql import DataFrame, SparkSession
 
-from pydeequ.pandas_utils import ensure_pyspark_df
+from pydeequ3.pandas_utils import ensure_pyspark_df
 
 
 class ConstraintSuggestionRunner:
@@ -149,10 +149,9 @@ class _RulesObject:
     def _deequSuggestions(self):
         if self._jvm:
             return self._jvm.com.amazon.deequ.suggestions
-        else:
-            raise AttributeError(
-                "JVM not set, please run _set_jvm() method first."
-            )  # TODO: Test that this exception gets raised
+        raise AttributeError(
+            "JVM not set, please run _set_jvm() method first."
+        )  # TODO: Test that this exception gets raised
 
 
 class DEFAULT(_RulesObject):

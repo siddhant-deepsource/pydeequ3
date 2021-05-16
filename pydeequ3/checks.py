@@ -3,7 +3,7 @@ from enum import Enum
 
 from pyspark.sql import SparkSession
 
-from pydeequ.scala_utils import ScalaFunction1, to_scala_seq
+from pydeequ3.scala_utils import ScalaFunction1, to_scala_seq
 
 # TODO implement custom assertions
 # TODO implement all methods without outside class dependencies
@@ -17,10 +17,9 @@ class CheckLevel(Enum):
     def _get_java_object(self, jvm):
         if self == CheckLevel.Error:
             return jvm.com.amazon.deequ.checks.CheckLevel.Error()
-        elif self == CheckLevel.Warning:
+        if self == CheckLevel.Warning:
             return jvm.com.amazon.deequ.checks.CheckLevel.Warning()
-        else:
-            raise ValueError("Invalid value for CheckLevel Enum")
+        raise ValueError("Invalid value for CheckLevel Enum")
 
 
 class CheckStatus(Enum):
@@ -33,12 +32,11 @@ class CheckStatus(Enum):
         check_status_class = java_object._jvm.com.amazon.deequ.checks.CheckStatus
         if java_object.equals(check_status_class.Success()):
             return CheckStatus.Success
-        elif java_object.equals(check_status_class.Warning()):
+        if java_object.equals(check_status_class.Warning()):
             return CheckStatus.Warning
-        elif java_object.equals(check_status_class.Error()):
+        if java_object.equals(check_status_class.Error()):
             return CheckStatus.Error
-        else:
-            raise ValueError(f"{java_object} is not a valid CheckStatus Object")
+        raise ValueError(f"{java_object} is not a valid CheckStatus Object")
 
 
 class ConstrainableDataTypes(Enum):
@@ -52,18 +50,17 @@ class ConstrainableDataTypes(Enum):
     def _get_java_object(self, jvm):
         if self == ConstrainableDataTypes.Null:
             return jvm.com.amazon.deequ.constraints.ConstrainableDataTypes.Null()
-        elif self == ConstrainableDataTypes.Fractional:
+        if self == ConstrainableDataTypes.Fractional:
             return jvm.com.amazon.deequ.constraints.ConstrainableDataTypes.Fractional()
-        elif self == ConstrainableDataTypes.Integral:
+        if self == ConstrainableDataTypes.Integral:
             return jvm.com.amazon.deequ.constraints.ConstrainableDataTypes.Integral()
-        elif self == ConstrainableDataTypes.Boolean:
+        if self == ConstrainableDataTypes.Boolean:
             return jvm.com.amazon.deequ.constraints.ConstrainableDataTypes.Boolean()
-        elif self == ConstrainableDataTypes.String:
+        if self == ConstrainableDataTypes.String:
             return jvm.com.amazon.deequ.constraints.ConstrainableDataTypes.String()
-        elif self == ConstrainableDataTypes.Numeric:
+        if self == ConstrainableDataTypes.Numeric:
             return jvm.com.amazon.deequ.constraints.ConstrainableDataTypes.Numeric()
-        else:
-            raise ValueError("Invalid value for ConstrainableDataType Enum")
+        raise ValueError("Invalid value for ConstrainableDataType Enum")
 
 
 class CheckResult:
@@ -99,7 +96,7 @@ class Check:
         self._Check = self._check_java_class(
             self._java_level, self.description, getattr(self._check_java_class, "apply$default$3")()
         )
-        self.constraints = constraints if constraints else []
+        self.constraints = constraints or []
         for constraint in self.constraints:
             self.addConstraint(constraint)
 
@@ -238,6 +235,7 @@ class Check:
         :return: isPrimaryKey self: A Check.scala object that asserts completion in the columns.
         """
         hint = self._jvm.scala.Option.apply(hint)
+        print(f"Unsolved integration: {hint}")
         raise NotImplementedError("Unsolved integration of Python tuple => varArgs")
 
     def hasUniqueness(self, columns, assertion, hint=None):
@@ -779,7 +777,7 @@ class Check:
         :return: isContainedIn self: A Check object that runs the assertion on the columns.
         """
         arr = self._spark_session.sparkContext._gateway.new_array(self._jvm.java.lang.String, len(allowed_values))
-        for i in range(0, len(allowed_values)):
+        for i in range(len(allowed_values)):
             arr[i] = allowed_values[i]
         self._Check = self._Check.isContainedIn(column, arr)
         return self

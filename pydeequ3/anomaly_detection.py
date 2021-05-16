@@ -15,10 +15,9 @@ class _AnomalyObject:
     def _deequAnomalies(self):
         if self._jvm:
             return self._jvm.com.amazon.deequ.anomalydetection
-        else:
-            raise AttributeError(
-                "JVM not set, please run _set_jvm() method first."
-            )  # TODO: Test that this exception gets raised
+        raise AttributeError(
+            "JVM not set, please run _set_jvm() method first."
+        )  # TODO: Test that this exception gets raised
 
 
 ######################## INDIVIDUAL ANOMALY STRATEGIES  ########################
@@ -190,16 +189,17 @@ class MetricInterval(Enum):
 
     def _get_java_object(self, jvm):
         if self == MetricInterval.Daily:
-            daily_jvm = getattr(jvm.com.amazon.deequ.anomalydetection.seasonal.HoltWinters, "MetricInterval$")().Daily()
-            return daily_jvm
+            return getattr(
+                jvm.com.amazon.deequ.anomalydetection.seasonal.HoltWinters,
+                "MetricInterval$",
+            )().Daily()
 
-        elif self == MetricInterval.Monthly:
-            monthly_jvm = getattr(
-                jvm.com.amazon.deequ.anomalydetection.seasonal.HoltWinters, "MetricInterval$"
+        if self == MetricInterval.Monthly:
+            return getattr(
+                jvm.com.amazon.deequ.anomalydetection.seasonal.HoltWinters,
+                "MetricInterval$",
             )().Monthly()
-            return monthly_jvm
-        else:
-            raise ValueError("Invalid value for MetricInterval Enum")
+        raise ValueError("Invalid value for MetricInterval Enum")
 
 
 class SeriesSeasonality(Enum):
@@ -213,17 +213,17 @@ class SeriesSeasonality(Enum):
 
     def _get_java_object(self, jvm):
         if self == SeriesSeasonality.Weekly:
-            weekly_jvm = getattr(
-                jvm.com.amazon.deequ.anomalydetection.seasonal.HoltWinters, "SeriesSeasonality$"
+            return getattr(
+                jvm.com.amazon.deequ.anomalydetection.seasonal.HoltWinters,
+                "SeriesSeasonality$",
             )().Weekly()
-            return weekly_jvm
-        elif self == SeriesSeasonality.Yearly:
-            yearly_jvm = getattr(
-                jvm.com.amazon.deequ.anomalydetection.seasonal.HoltWinters, "SeriesSeasonality$"
+
+        if self == SeriesSeasonality.Yearly:
+            return getattr(
+                jvm.com.amazon.deequ.anomalydetection.seasonal.HoltWinters,
+                "SeriesSeasonality$",
             )().Yearly()
-            return yearly_jvm
-        else:
-            raise ValueError("Invalid value for MetricInterval Enum")
+        raise ValueError("Invalid value for MetricInterval Enum")
 
 
 class HoltWinters(_AnomalyObject):

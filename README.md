@@ -2,7 +2,10 @@
 
 PyDeequ is a Python API for [Deequ](https://github.com/awslabs/deequ), a library built on top of Apache Spark for defining "unit tests for data", which measure data quality in large datasets. PyDeequ is written to support usage of Deequ in Python.
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Coverage](https://img.shields.io/badge/coverage-90%25-green)
+[![CodeQL](https://github.com/ChethanUK/pydeequ3/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/ChethanUK/pydeequ3/actions/workflows/codeql-analysis.yml) [![BuildAndTest](https://github.com/ChethanUK/pydeequ3/actions/workflows/build_test.yml/badge.svg)](https://github.com/ChethanUK/pydeequ3/actions/workflows/build_test.yml) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/ChethanUK/pydeequ3.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/ChethanUK/pydeequ3/context:python)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+
 
 There are 4 main components of Deequ, and they are:
 
@@ -31,14 +34,14 @@ The following will quickstart you with some basic usage. For more in-depth examp
 You can install [PyDeequ via pip](https://pypi.org/project/pydeequ/).
 
 ```bash
-pip install pydeequ
+pip install pydeequ3
 ```
 
 ### Set up a PySpark session
 
 ```python
 from pyspark.sql import SparkSession, Row
-import pydeequ
+import pydeequ3 as pydeequ
 
 spark = (SparkSession
     .builder
@@ -55,7 +58,10 @@ df = spark.sparkContext.parallelize([
 ### Analyzers
 
 ```python
-from pydeequ.analyzers import *
+try:
+    from pydeequ.analyzers import *
+except Exception:
+    from pydeequ3.analyzers import *
 
 analysisResult = AnalysisRunner(spark) \
                     .onData(df) \
@@ -70,7 +76,10 @@ analysisResult_df.show()
 ### Profile
 
 ```python
-from pydeequ.profiles import *
+try:
+    from pydeequ.profiles import *
+except Exception:
+    from pydeequ3.profiles import *
 
 result = ColumnProfilerRunner(spark) \
     .onData(df) \
@@ -83,7 +92,10 @@ for col, profile in result.profiles.items():
 ### Constraint Suggestions
 
 ```python
-from pydeequ.suggestions import *
+try:
+    from pydeequ.suggestions import *
+except Exception:
+    from pydeequ3.suggestions import *
 
 suggestionResult = ConstraintSuggestionRunner(spark) \
              .onData(df) \
@@ -97,8 +109,13 @@ print(suggestionResult)
 ### Constraint Verification
 
 ```python
-from pydeequ.checks import *
-from pydeequ.verification import *
+try:
+    from pydeequ.checks import *
+    from pydeequ.verification import *
+except Exception:
+    from pydeequ3.checks import *
+    from pydeequ3.verification import *
+
 
 check = Check(spark, CheckLevel.Warning, "Review Check")
 
@@ -122,8 +139,13 @@ checkResult_df.show()
 Save to a Metrics Repository by adding the `useRepository()` and `saveOrAppendResult()` calls to your Analysis Runner.
 
 ```python
-from pydeequ.repository import *
-from pydeequ.analyzers import *
+try:
+    from pydeequ.repository import *
+    from pydeequ.analyzers import *
+except Exception:
+    from pydeequ3.repository import *
+    from pydeequ3.analyzers import *
+
 
 metrics_file = FileSystemMetricsRepository.helper_metrics_file(spark, 'metrics.json')
 repository = FileSystemMetricsRepository(spark, metrics_file)

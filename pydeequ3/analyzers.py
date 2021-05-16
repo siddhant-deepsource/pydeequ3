@@ -6,9 +6,9 @@ import json
 
 from pyspark.sql import DataFrame, SparkSession, SQLContext
 
-from pydeequ.pandas_utils import ensure_pyspark_df
-from pydeequ.repository import MetricsRepository, ResultKey
-from pydeequ.scala_utils import to_scala_seq
+from pydeequ3.pandas_utils import ensure_pyspark_df
+from pydeequ3.repository import MetricsRepository, ResultKey
+from pydeequ3.scala_utils import to_scala_seq
 
 
 class _AnalyzerObject:
@@ -24,10 +24,9 @@ class _AnalyzerObject:
     def _deequAnalyzers(self):
         if self._jvm:
             return self._jvm.com.amazon.deequ.analyzers
-        else:
-            raise AttributeError(
-                "JVM not set, please run _set_jvm() method first."
-            )  # TODO: Test that this exception gets raised
+        raise AttributeError(
+            "JVM not set, please run _set_jvm() method first."
+        )  # TODO: Test that this exception gets raised
 
 
 class AnalysisRunner:

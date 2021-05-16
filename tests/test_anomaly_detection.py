@@ -4,10 +4,10 @@ import unittest
 import pytest
 from pyspark.sql import Row
 
-from pydeequ.analyzers import *
-from pydeequ.anomaly_detection import *
-from pydeequ.repository import *
-from pydeequ.verification import *
+from pydeequ3.analyzers import *
+from pydeequ3.anomaly_detection import *
+from pydeequ3.repository import *
+from pydeequ3.verification import *
 from tests.conftest import setup_pyspark
 
 
@@ -274,7 +274,7 @@ class TestAnomalies(unittest.TestCase):
             print(df.collect())
             return df.select("check_status").collect()
 
-        elif test == 2 or test == 3:
+        if test in [2, 3]:
             metricsRepository = InMemoryMetricsRepository(self.spark)
 
             for x in range(14):
@@ -480,9 +480,7 @@ class TestAnomalies(unittest.TestCase):
         strategy_jvm = anomaly._anomaly_jvm
 
         AnomalyDetector._set_jvm(self._jvm, strategy_jvm)
-        detector_jvm = AnomalyDetector._anomaly_jvm
-
-        return detector_jvm
+        return AnomalyDetector._anomaly_jvm
 
     @unittest.skip("Not implemented yet!")
     def test_anomalyDetector(self):
